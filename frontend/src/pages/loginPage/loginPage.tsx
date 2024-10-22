@@ -24,7 +24,7 @@ const LoginPage: React.FC = () => {
     if (result.id) {
       console.log('Login Successful');
       updateStudent(result); // Saves the student information
-      navigate('/studentHome'); // Navigate to student home page
+      navigate('/homePage'); // Navigate to student home page
     } else {
       setPassword('');
       setError('Login Error');

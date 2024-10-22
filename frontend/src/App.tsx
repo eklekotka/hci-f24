@@ -6,7 +6,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { StudentProvider } from './components/useStudent/useStudent'; // Adjust path as necessary
 import LoginPage from './pages/loginPage/loginPage';
 import CalendarPage from './pages/calendarPage/calendarPage'; // Placeholder for student home page
-
+import HomePage from './pages/homePage/homePage';
 const App: React.FC = () => {
   return (
     <StudentProvider>
@@ -14,6 +14,7 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/calendar" element={<CalendarPage />} />
+          <Route path="/home" element={<HomePage />} />
         </Routes>
       </Router>
     </StudentProvider>
