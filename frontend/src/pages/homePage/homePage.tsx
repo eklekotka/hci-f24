@@ -1,11 +1,11 @@
 
-import './loginPage.css'; 
+import './homePage.css'; 
 
 
 const HomePage: React.FC = () => {
 
   return (
-<div>TBA -- not done yet</div>
+    <div>TBA -- not done yet</div>
   );
 };
 
