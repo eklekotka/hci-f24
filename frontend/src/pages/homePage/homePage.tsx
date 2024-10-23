@@ -1,11 +1,14 @@
 
 import './homePage.css'; 
-
+import NavBar from '../../components/navBar/navBar';
 
 const HomePage: React.FC = () => {
 
   return (
-    <div>TBA -- not done yet</div>
+    <div> 
+        <NavBar />
+        <h1>TBD -- not done yet</h1>
+    </div>
   );
 };
 

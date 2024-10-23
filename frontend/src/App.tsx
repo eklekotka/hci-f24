@@ -7,14 +7,18 @@ import { StudentProvider } from './components/useStudent/useStudent'; // Adjust 
 import LoginPage from './pages/loginPage/loginPage';
 import CalendarPage from './pages/calendarPage/calendarPage'; // Placeholder for student home page
 import HomePage from './pages/homePage/homePage';
+import ProfilePage from './pages/profilePage/profilePage';
+import WelcomePage from './pages/welcomePage/welcomePage';
 const App: React.FC = () => {
   return (
     <StudentProvider>
       <Router>
         <Routes>
+          <Route path="/" element={<WelcomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/calendar" element={<CalendarPage />} />
-          <Route path="/home" element={<HomePage />} />
+          <Route path="/homePage" element={<HomePage />} />
+          <Route path="/profilePage" element={<ProfilePage />} />
         </Routes>
       </Router>
     </StudentProvider>
