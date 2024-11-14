@@ -1,4 +1,4 @@
-import "./homePage.css"
+import "./calendar.css"
 import NavBar from "../../components/navBar/navBar"
 
 const HomePage: React.FC = () => {
@@ -30,7 +30,7 @@ const HomePage: React.FC = () => {
                 })
                 const date = sourceDate.getDate()
                 return (
-                  <div>
+                  <div key={index}>
                     <p>{month}</p>
                     <p>{date}</p>
                     <p>{dayOfTheWeek}</p>

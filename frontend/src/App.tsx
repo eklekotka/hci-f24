@@ -1,14 +1,15 @@
 //import { useState } from 'react'
 //import reactLogo from './assets/react.svg'
 //import viteLogo from '/vite.svg'
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { StudentProvider } from './components/useStudent/useStudent'; // Adjust path as necessary
-import LoginPage from './pages/loginPage/loginPage';
-import CalendarPage from './pages/calendarPage/calendarPage'; // Placeholder for student home page
-import HomePage from './pages/homePage/homePage';
-import ProfilePage from './pages/profilePage/profilePage';
-import WelcomePage from './pages/welcomePage/welcomePage';
+import React from "react"
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
+import { StudentProvider } from "./components/useStudent/useStudent" // Adjust path as necessary
+import LoginPage from "./pages/loginPage/loginPage"
+import CalendarPage from "./pages/calendarPage/calendarPage" // Placeholder for student home page
+import HomePage from "./pages/calendar/calendar"
+import ProfilePage from "./pages/profilePage/profilePage"
+import WelcomePage from "./pages/welcomePage/welcomePage"
+import { OptimizationsPage } from "./pages/optimizations/optimizations"
 const App: React.FC = () => {
   return (
     <StudentProvider>
@@ -16,17 +17,17 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/" element={<WelcomePage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/calendar" element={<CalendarPage />} />
-          <Route path="/homePage" element={<HomePage />} />
+          <Route path="/calendarold" element={<CalendarPage />} />
+          <Route path="/optimizations" element={<OptimizationsPage />} />
+          <Route path="/calendar" element={<HomePage />} />
           <Route path="/profilePage" element={<ProfilePage />} />
         </Routes>
       </Router>
     </StudentProvider>
-  );
-};
+  )
+}
 
-export default App;
-
+export default App
 
 // return (
 //   <>
