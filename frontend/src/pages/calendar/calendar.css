@@ -54,3 +54,20 @@
   font-weight: bold;
   font-size: 25px;
 }
+
+.day-column {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.day-column div {
+  border: 1px solid #DDDEEB;
+  margin: 0;
+  padding: 10px;
+  height: 30px;
+}
+
+.calendar-body {
+  display: flex;
+}
