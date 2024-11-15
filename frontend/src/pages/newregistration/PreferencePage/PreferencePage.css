@@ -1,0 +1,128 @@
+.preferences-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    width: 400px; /* Set a fixed width */
+    max-width: 100%; /* Ensures it is responsive on small screens */
+    height: auto; /* Allow height to adjust based on content */
+    border: 2px solid #003a5d; /* Optional border for the outline */
+    border-radius: 10px; /* Optional rounded corners */
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    overflow: hidden; /* Ensures content doesn't overflow */
+    position: relative;
+  }
+  
+  .input-group {
+    margin-bottom: 20px;
+    width: 100%; /* Ensure it takes full width within the form */
+  }
+  
+  .input-group label {
+    font-size: 16px;
+    display: block;
+    margin-bottom: 8px;
+  }
+  
+  .input-group input,
+  .input-group select {
+    padding: 8px;
+    font-size: 16px;
+    width: 100%; /* Full width of the container */
+    max-width: 300px;
+    margin-bottom: 10px;
+  }
+  
+  /* Styling for time inputs - horizontally aligned */
+  .time-inputs {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 20px;
+    width: 100%;
+  }
+  
+  select {
+    padding: 5px;
+    width: 80px;
+    font-size: 14px;
+  }
+  
+  label {
+    margin-right: 10px;
+    font-weight: bold;
+  }
+  
+  .time-box {
+    display: flex;
+    gap: 5px;
+  }
+  
+  .time-box select {
+    font-size: 16px;
+    padding: 5px;
+  }
+  
+  button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #003a5d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #002a42;
+  }
+  
+  /* Button group alignment */
+  .buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 20px; /* Ensure space between content and buttons */
+  }
+  
+  .back-button {
+    padding: 5px 15px;
+    background-color: #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .back-button:hover {
+    background-color: #bbb;
+  }
+  
+  .next-button {
+    padding: 10px 20px;
+    background-color: #003a5d;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .next-button:hover {
+    background-color: #002a42;
+  }
+  
+  /* Ensure buttons stay at the bottom of the form */
+  .buttons {
+    margin-top: auto; /* Push buttons to the bottom of the container */
+  }
+  
+  /* Make sure the form is responsive to screen size */
+  @media (max-width: 480px) {
+    .preferences-form {
+      width: 90%; /* Adjust width for smaller screens */
+      height: auto; /* Allow height to adjust on small screens */
+    }
+  
+    .input-group input,
+    .input-group select {
+      max-width: 100%; /* Allow inputs to stretch fully within the form */
+    }
+  }
+  
