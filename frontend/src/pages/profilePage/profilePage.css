@@ -1,0 +1,90 @@
+/* General styles */
+.profilepage-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+  }
+  
+  /* User Profile */
+  .user-profile {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+  }
+  
+  /* Profile Title */
+  .user-profile h2 {
+    font-size: 24px;
+    color: #003a5d; /* Primary color */
+    margin-bottom: 20px;
+  }
+  
+  /* Profile Info Section */
+  .profile-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  /* Profile Picture */
+  .profile-picture {
+    position: relative;
+    margin-bottom: 20px;
+  }
+  
+  .profile-picture img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #003a5d; /* Border color for the profile image */
+  }
+  
+  /* Change Icon Button */
+  .change-icon-button {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: #003a5d;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .change-icon-button:hover {
+    background-color: #005f87; /* Darker shade of the primary color */
+  }
+  
+  /* Profile Details Section */
+  .profile-details {
+    margin-top: 20px;
+    font-size: 16px;
+    color: #333;
+    text-align: left;
+  }
+  
+  .profile-details p {
+    margin: 5px 0;
+  }
+  
+  .profile-details strong {
+    color: #003a5d; /* Use primary color for labels */
+  }
+  
+  /* File Input (Hidden) */
+  input[type="file"] {
+    display: none;
+  }
+  

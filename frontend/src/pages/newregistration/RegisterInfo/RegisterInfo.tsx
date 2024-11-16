@@ -1,17 +1,18 @@
 import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import User from "../../../components/User"; // Import the User class
 import "./RegisterInfo.css";
 
 const RegisterInfo = () => {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [repeatPassword, setRepeatPassword] = useState("");
-  const [passwordVisible, setPasswordVisible] = useState(false);
-  const [repeatPasswordVisible, setRepeatPasswordVisible] = useState(false);
-  const [error, setError] = useState("");
+  const [firstName, setFirstName] = useState<string>("");
+  const [lastName, setLastName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [repeatPassword, setRepeatPassword] = useState<string>("");
+  const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
+  const [repeatPasswordVisible, setRepeatPasswordVisible] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
 
   const navigate = useNavigate();
 
@@ -22,9 +23,11 @@ const RegisterInfo = () => {
       setError("Passwords do not match!");
     } else {
       setError("");
-      // Store data in localStorage and redirect
-      localStorage.setItem("userInfo", JSON.stringify({ firstName, lastName, email }));
-      navigate("/preference-setup"); 
+      // Create a new User object and save it to localStorage
+      const user = new User(firstName, lastName, email);
+      user.saveToLocalStorage();
+
+      navigate("/preference-setup");
     }
   };
 
