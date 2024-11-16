@@ -10,6 +10,8 @@ import HomePage from "./pages/calendar/calendar"
 import ProfilePage from "./pages/profilePage/profilePage"
 import WelcomePage from "./pages/welcomePage/welcomePage"
 import { OptimizationsPage } from "./pages/optimizations/optimizations"
+import RegisterInfo from "./pages/newregistration/RegisterInfo/RegisterInfo"
+import PreferencePage from "./pages/newregistration/PreferencePage/PreferencePage"
 const App: React.FC = () => {
   return (
     <StudentProvider>
@@ -21,6 +23,8 @@ const App: React.FC = () => {
           <Route path="/optimizations" element={<OptimizationsPage />} />
           <Route path="/calendar" element={<HomePage />} />
           <Route path="/profilePage" element={<ProfilePage />} />
+          <Route path="/create-user" element={<RegisterInfo />} />
+          <Route path="/preference-setup" element={<PreferencePage />} />
         </Routes>
       </Router>
     </StudentProvider>

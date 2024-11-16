@@ -1,0 +1,53 @@
+/* General Container Styles */
+.welcome-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #ffffff;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 20px;
+  }
+  
+  /* Button Container */
+  .button-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Slightly larger gap for better spacing */
+    margin-top: 20px;
+  }
+  
+  /* Button Styles */
+  .button {
+    padding: 12px 36px; /* Increased padding for larger click area */
+    font-size: 18px;
+    font-weight: bold; /* Emphasize button text */
+    background-color: #003a5d;
+    color: #fff;
+    border: none;
+    border-radius: 8px; /* Slightly rounder corners */
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .button:hover {
+    background-color: #002a43;
+    transform: scale(1.05); /* Subtle scaling on hover */
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .button {
+      padding: 10px 24px; /* Adjust padding for smaller screens */
+      font-size: 16px; /* Reduce font size slightly */
+    }
+  
+    .button-container {
+      gap: 10px; /* Reduce spacing between buttons */
+    }
+  }
+  
