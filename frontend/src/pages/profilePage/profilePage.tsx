@@ -1,6 +1,8 @@
 //import defaultProfilePic from "../../photos/default-profile-pic.png"; // Placeholder image path default-profile-pic.jpg
 
 
+import defaultProfilePic from "../../../public/photos/keithBagley.png";
+
 const ProfilePage = () => {
 
 
@@ -13,7 +15,7 @@ const ProfilePage = () => {
         <div className="profile-info">
           <div className="profile-picture">
             <img
-        
+            
               alt="Profile"
             />
             <input

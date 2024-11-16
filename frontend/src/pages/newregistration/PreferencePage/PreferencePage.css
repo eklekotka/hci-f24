@@ -1,211 +1,182 @@
-.preferences-form {
+/* General Styles */
+.step-container {
     display: flex;
     flex-direction: column;
     align-items: center;
+    text-align: center;
     padding: 20px;
-    width: 400px; /* Set a fixed width */
-    max-width: 100%; /* Ensures it is responsive on small screens */
-    height: auto; /* Allow height to adjust based on content */
-    border: 2px solid #003a5d; /* Optional border for the outline */
-    border-radius: 10px; /* Optional rounded corners */
-    background-color: white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-    overflow: hidden; /* Ensures content doesn't overflow */
-    position: relative;
-  }
-  
-  .input-group {
-    margin-bottom: 20px;
-    width: 100%; /* Ensure it takes full width within the form */
-  }
-  
-  .input-group label {
-    font-size: 16px;
-    display: block;
-    margin-bottom: 8px;
-  }
-  
-  .input-group input,
-  .input-group select {
-    padding: 8px;
-    font-size: 16px;
-    width: 100%; /* Full width of the container */
-    max-width: 300px;
-    margin-bottom: 10px;
-  }
-  
-  /* Styling for time inputs - horizontally aligned */
-  .time-inputs {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    margin-bottom: 20px;
-    width: 100%;
-  }
-  
-  select {
-    padding: 5px;
-    width: 80px;
-    font-size: 14px;
+    margin: 0 auto;
+    width: 500px;
+    height: 300px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   
   label {
-    margin-right: 10px;
-    font-weight: bold;
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+  
+  .time-inputs {
+    display: flex;
+    gap: 10px;
+    margin: 10px 0;
+  }
+  
+  .time-input {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
   }
   
   .time-box {
     display: flex;
-    gap: 5px;
+    flex-direction: column;
+    align-items: center;
   }
   
-  .time-box select {
+  select,
+  input[type="number"] {
+    padding: 5px 10px;
     font-size: 16px;
-    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 80px;
+  }
+  
+  select:focus,
+  input[type="number"]:focus {
+    outline: none;
+    border-color: #007bff;
+  }
+  
+  .buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
   }
   
   button {
     padding: 10px 20px;
     font-size: 16px;
-    background-color: #003a5d;
-    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .next-button {
+    background-color: #28a745; /* Green */
+    color: #fff;
+  }
+  
+  .next-button:hover {
+    background-color: #218838;
+    transform: scale(1.05);
+  }
+  
+  .back-button,
+  .previous-button {
+    background-color: #6c757d; /* Grey */
+    color: #fff;
+  }
+  
+  .back-button:hover,
+  .previous-button:hover {
+    background-color: #5a6268;
+    transform: scale(1.05);
+  }
+  
+  .login-button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    background-color: #007bff; /* Blue */
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
     border: none;
     border-radius: 5px;
     cursor: pointer;
   }
   
-  button:hover {
-    background-color: #002a42;
+  .login-button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
   }
   
-  /* Button group alignment */
-  .buttons {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    margin-top: 20px; /* Ensure space between content and buttons */
+  .canvas-logo {
+    width: 30px;
+    height: 30px;
   }
   
-  .back-button {
-    padding: 5px 15px;
-    background-color: #ccc;
-    border-radius: 5px;
+  /* Modal Styles */
+  .modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+  }
+  
+  .modal-header {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 15px;
+  }
+  
+  .modal-close {
+    background: none;
+    border: none;
+    font-size: 18px;
     cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 10px;
   }
   
-  .back-button:hover {
-    background-color: #bbb;
+  .modal-close:hover {
+    color: red;
   }
   
-  .next-button {
-    padding: 10px 20px;
-    background-color: #003a5d;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .next-button:hover {
-    background-color: #002a42;
-  }
-  
-  /* Ensure buttons stay at the bottom of the form */
-  .buttons {
-    margin-top: auto; /* Push buttons to the bottom of the container */
-  }
-  
-  /* Make sure the form is responsive to screen size */
-  @media (max-width: 480px) {
-    .preferences-form {
-      width: 90%; /* Adjust width for smaller screens */
-      height: auto; /* Allow height to adjust on small screens */
-    }
-  
-    .input-group input,
-    .input-group select {
-      max-width: 100%; /* Allow inputs to stretch fully within the form */
-    }
-  }
-  /* Modal overlay */
-.modal-overlay {
+  /* Overlay for Modal */
+  .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Dim background */
+    background-color: rgba(0, 0, 0, 0.5); /* Transparent dark background */
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000; /* Bring modal on top */
+    z-index: 1000;
   }
-  
-  /* Modal content */
   .modal-content {
-    background-color: #fff;
-    padding: 20px;
+    background-color: white;
+    padding: 30px;
     border-radius: 10px;
-    width: 90%;
-    max-width: 400px;
-    text-align: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 500px;
+    width: 90%; /* Ensure it fits on small screens */
   }
-  
-  /* Canvas logo */
-  .canvas-logo {
-    max-width: 100px;
-    margin-bottom: 20px;
-  }
-  
-  /* Input fields */
-  .input-field {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-  
-  /* Buttons */
-  .sign-in-button {
-    background-color: #f44336; /* Red button */
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    margin-top: 10px;
-    cursor: pointer;
-    font-size: 16px;
-  }
-  
-  .sign-in-button:hover {
-    background-color: #d32f2f; /* Darker red */
-  }
-  
-  .done-button {
-    background-color: #4caf50; /* Green button */
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    margin-top: 10px;
-    cursor: pointer;
-    font-size: 16px;
-  }
-  
-  .done-button:hover {
-    background-color: #388e3c; /* Darker green */
-  }
-  
-  .close-button {
-    background-color: #ddd;
-    padding: 5px 10px;
-    border: none;
-    border-radius: 5px;
-    margin-top: 10px;
-    cursor: pointer;
-  }
-  
-  .close-button:hover {
-    background-color: #bbb;
+  /* Centered Content for Step 4 */
+  .centered-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
   }
   

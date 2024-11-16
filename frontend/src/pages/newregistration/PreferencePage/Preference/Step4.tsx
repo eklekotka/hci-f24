@@ -42,7 +42,7 @@ const Step4: React.FC<Step4Props> = ({
   };
 
   return (
-    <div className="step4-container">
+    <div className="step-container">
       <div className="centered-content">
         <button className="login-button" onClick={openLoginModal}>
           <img src={canvasLogo} alt="Canvas Logo" className="canvas-logo" />

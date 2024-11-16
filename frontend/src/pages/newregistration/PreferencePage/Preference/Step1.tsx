@@ -32,7 +32,7 @@ const Step1: React.FC<Step1Props> = ({
   handleNextStep,
 }) => {
   return (
-    <div className="input-group">
+    <div className="step-container">
       <label>What are your working hours?</label>
 
       {/* From Time */}

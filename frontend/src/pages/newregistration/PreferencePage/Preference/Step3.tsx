@@ -25,7 +25,7 @@ const Step3: React.FC<Step3Props> = ({
   };
 
   return (
-    <div className="input-group">
+    <div className="step-container">
       <label>How early do you like to know about upcoming assignments?</label>
       <div className="time-inputs">
         <input

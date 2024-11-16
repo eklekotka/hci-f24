@@ -23,7 +23,7 @@ const Step2: React.FC<Step2Props> = ({
   handlePreviousStep,
 }) => {
   return (
-    <div className="input-group">
+    <div className="step-container">
       <label>How long do you like to study for at one time?</label>
       <div className="time-input">
         <div className="time-box">
