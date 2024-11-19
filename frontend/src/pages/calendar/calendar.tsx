@@ -264,53 +264,64 @@ const HomePage: React.FC = () => {
                 )
               })}
             </div>
-            <DndContext
-              modifiers={[
-                restrictToParentElement(contentFrameRef),
-                createSnapModifier(150, 15),
-              ]}
-              autoScroll={false}
-              onDragEnd={(draggedEvent) => {
-                setEvents(
-                  events.map((event) => {
-                    if (event.id === draggedEvent.active.id) {
-                      return updateTimeFromCoordDelta(
-                        draggedEvent.delta.x,
-                        draggedEvent.delta.y,
-                        event
-                      )
-                    }
-                    return event
-                  })
-                )
-              }}
-            >
-              <div className="calendar-body" ref={contentFrameRef}>
-                {dates.map((date) => {
-                  // TODO: make this check more robust
-                  const eventsForDay = events.filter(
-                    ({ start }) => start.getDate() === date.getDate()
+            <div className="calendar-overlay-container">
+              <DndContext
+                modifiers={[
+                  restrictToParentElement(contentFrameRef),
+                  createSnapModifier(150, 15),
+                ]}
+                autoScroll={false}
+                onDragEnd={(draggedEvent) => {
+                  setEvents(
+                    events.map((event) => {
+                      if (event.id === draggedEvent.active.id) {
+                        return updateTimeFromCoordDelta(
+                          draggedEvent.delta.x,
+                          draggedEvent.delta.y,
+                          event
+                        )
+                      }
+                      return event
+                    })
                   )
+                }}
+              >
+                <div className="calendar-body" ref={contentFrameRef}>
+                  {dates.map((date) => {
+                    // TODO: make these checks more robust
+                    const eventsForDay = events.filter(
+                      ({ start }) => start.getDate() === date.getDate()
+                    )
 
+                    return (
+                      <div key={date.getTime()} className="day-column">
+                        {range(startOffsetHours, endOfDayHour).map((num) => (
+                          <div
+                            key={num}
+                            className="calendar-background-cell"
+                          ></div>
+                        ))}
+                        {eventsForDay.map((event) => (
+                          <DraggableEvent
+                            event={event}
+                            key={event.start.getTime()}
+                            startOffsetHours={startOffsetHours}
+                          />
+                        ))}
+                      </div>
+                    )
+                  })}
+                </div>
+              </DndContext>
+              <div className="calendar-body calendar-slot-overlay">
+                {dates.map((date) => {
+                  // TODO: make these checks more robust
                   const workBlocksForDay = freeSlots.filter(
                     ({ start }) => start.getDate() === date.getDate()
                   )
 
                   return (
                     <div key={date.getTime()} className="day-column">
-                      {range(startOffsetHours, endOfDayHour).map((num) => (
-                        <div
-                          key={num}
-                          className="calendar-background-cell"
-                        ></div>
-                      ))}
-                      {eventsForDay.map((event) => (
-                        <DraggableEvent
-                          event={event}
-                          key={event.start.getTime()}
-                          startOffsetHours={startOffsetHours}
-                        />
-                      ))}
                       {workBlocksForDay.map((event) => (
                         <DroppableWorkZone
                           workBlock={{
@@ -325,23 +336,20 @@ const HomePage: React.FC = () => {
                   )
                 })}
               </div>
-              {/* <div className="calendar-body-overlay">
-                {dates.map((date) => {
-                  return (
-                    <div key={date.getTime()} className="day-column">
-                      <DroppableWorkZone
-                        workBlock={{
-                          start: new Date("2024-11-13 18:30"),
-                          end: new Date("2024-11-13 20:30"),
-                          id: 5,
-                        }}
-                        startOffsetHours={9}
-                      />
-                    </div>
-                  )
-                })}
-              </div> */}
-            </DndContext>
+            </div>
+          </div>
+          <div className="assignments-container">
+            <h2>
+              Recent
+              <br />
+              Assignments
+            </h2>
+            <div className="assignments">
+              <p>title</p>
+              <p>title</p>
+              <p>title</p>
+              <p>title</p>
+            </div>
           </div>
         </div>
       </div>
