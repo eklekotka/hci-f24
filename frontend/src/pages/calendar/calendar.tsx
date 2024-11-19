@@ -53,15 +53,14 @@ function roundToNearestInterval(value: number, interval: number) {
   return Math.round(value / interval) * interval
 }
 
-const DraggableEvent: React.FC<{ event: Event; startOffsetHours: number }> = ({
-  event: { start, end, name, id },
-  startOffsetHours,
-}) => {
-  const { attributes, listeners, setNodeRef, transform, isDragging } =
-    useDraggable({
-      id,
-    })
+function dateToTime(date: Date) {
+  return `${date.getHours()}:${String(date.getMinutes()).padStart(2, "0")}`
+}
 
+function calculateEventBoundingBox(
+  { end, start }: WorkBlock,
+  startOffsetHours: number
+) {
   const length = end.getTime() - start.getTime()
 
   const startOfDayDate = new Date(start)
@@ -71,23 +70,63 @@ const DraggableEvent: React.FC<{ event: Event; startOffsetHours: number }> = ({
   )
   startOfDayDate.setSeconds(0)
 
+  return {
+    height: length / 1000 / 60,
+    top: (start.getTime() - startOfDayDate.getTime()) / 1000 / 60,
+  }
+}
+
+interface WorkBlock {
+  start: Date
+  end: Date
+  id: number
+}
+
+const DroppableWorkZone: React.FC<{
+  workBlock: WorkBlock
+  startOffsetHours: number
+}> = ({ workBlock, startOffsetHours }) => {
+  const { height, top } = calculateEventBoundingBox(workBlock, startOffsetHours)
+
+  return <div className="workZone" style={{ height, top }}></div>
+}
+
+const DraggableEvent: React.FC<{ event: Event; startOffsetHours: number }> = ({
+  event,
+  startOffsetHours,
+}) => {
+  const { id, start, end, name } = event
+
+  const { attributes, listeners, setNodeRef, transform, isDragging } =
+    useDraggable({
+      id,
+    })
+
+  const { height, top } = calculateEventBoundingBox(event, startOffsetHours)
+
   return (
     <div
       ref={setNodeRef}
-      className="event"
+      className={"event" + (height <= 100 ? " short" : "")}
       {...listeners}
       {...attributes}
       style={{
-        height: length / 1000 / 60,
-        top: (start.getTime() - startOfDayDate.getTime()) / 1000 / 60,
+        height,
+        top,
         transform: `translate(${transform?.x}px, ${transform?.y}px) scale(${
           isDragging ? 1.05 : 1
         })`,
         boxShadow: `0px 0px ${isDragging ? 10 : 0}px 0px purple`,
-        zIndex: isDragging ? 1 : 0,
+        zIndex: isDragging ? 2 : 1,
       }}
     >
-      <p>{name}</p>
+      <p className="classTitle">{name}</p>
+      {isDragging && <div className="datePlaceholder"></div>}
+      {!isDragging && (
+        <p className="timeLabel">
+          {dateToTime(start)} - {dateToTime(end)}
+        </p>
+      )}
     </div>
   )
 }
@@ -132,55 +171,53 @@ const HomePage: React.FC = () => {
     )
 
   return (
-    <DndContext
-      modifiers={[createSnapModifier(150, 15)]}
-      autoScroll={false}
-      onDragEnd={(draggedEvent) => {
-        setEvents(
-          events.map((event) => {
-            if (event.id === draggedEvent.active.id) {
-              return updateTimeFromCoordDelta(
-                draggedEvent.delta.x,
-                draggedEvent.delta.y,
-                event,
-                new Date()
+    <div>
+      <NavBar />
+      <div className="center-container">
+        <div className="navigation-tabs">
+          <a href="/calendar" className="active">
+            Calendar
+          </a>
+          <a href="/optimizations">Optimizations</a>
+          <a href="/insights">Insights</a>
+        </div>
+        <div className="content-frame">
+          <div className="calendar-dates">
+            {dates.map((sourceDate) => {
+              const month = sourceDate.toLocaleDateString("en-us", {
+                month: "short",
+              })
+              const dayOfTheWeek = sourceDate.toLocaleDateString("en-us", {
+                weekday: "long",
+              })
+              const date = sourceDate.getDate()
+              return (
+                <div key={sourceDate.getTime()}>
+                  <p>{month}</p>
+                  <p>{date}</p>
+                  <p>{dayOfTheWeek}</p>
+                </div>
               )
-            }
-            return event
-          })
-        )
-      }}
-    >
-      <div>
-        <NavBar />
-        <div className="center-container">
-          <div className="navigation-tabs">
-            <a href="/calendar" className="active">
-              Calendar
-            </a>
-            <a href="/optimizations">Optimizations</a>
-            <a href="/insights">Insights</a>
+            })}
           </div>
-
-          <div className="content-frame">
-            <div className="calendar-dates">
-              {dates.map((sourceDate) => {
-                const month = sourceDate.toLocaleDateString("en-us", {
-                  month: "short",
+          <DndContext
+            modifiers={[createSnapModifier(150, 15)]}
+            autoScroll={false}
+            onDragEnd={(draggedEvent) => {
+              setEvents(
+                events.map((event) => {
+                  if (event.id === draggedEvent.active.id) {
+                    return updateTimeFromCoordDelta(
+                      draggedEvent.delta.x,
+                      draggedEvent.delta.y,
+                      event
+                    )
+                  }
+                  return event
                 })
-                const dayOfTheWeek = sourceDate.toLocaleDateString("en-us", {
-                  weekday: "long",
-                })
-                const date = sourceDate.getDate()
-                return (
-                  <div key={sourceDate.getTime()}>
-                    <p>{month}</p>
-                    <p>{date}</p>
-                    <p>{dayOfTheWeek}</p>
-                  </div>
-                )
-              })}
-            </div>
+              )
+            }}
+          >
             <div className="calendar-body">
               {dates.map((date) => {
                 // TODO: make this check more robust
@@ -200,15 +237,22 @@ const HomePage: React.FC = () => {
                         startOffsetHours={9}
                       />
                     ))}
+                    <DroppableWorkZone
+                      workBlock={{
+                        start: new Date("2024-11-13 18:30"),
+                        end: new Date("2024-11-13 20:30"),
+                        id: 5,
+                      }}
+                      startOffsetHours={9}
+                    />
                   </div>
                 )
               })}
             </div>
-          </div>
-          <h1>TBD -- not done yet</h1>
+          </DndContext>
         </div>
       </div>
-    </DndContext>
+    </div>
   )
 }
 
