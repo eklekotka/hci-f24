@@ -10,15 +10,17 @@ import HomePage from "./pages/calendar/calendar"
 import ProfilePage from "./pages/profilePage/profilePage"
 import WelcomePage from "./pages/welcomePage/welcomePage"
 import { OptimizationsPage } from "./pages/optimizations/optimizations"
+import { AnalyticsPage } from "./pages/analyticsPage/analyticsPage"
 const App: React.FC = () => {
   return (
     <StudentProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<WelcomePage />} />
+          <Route path="/testing" element={<WelcomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/calendarold" element={<CalendarPage />} />
           <Route path="/optimizations" element={<OptimizationsPage />} />
+          <Route path="/" element={<AnalyticsPage />} />
           <Route path="/calendar" element={<HomePage />} />
           <Route path="/profilePage" element={<ProfilePage />} />
         </Routes>
