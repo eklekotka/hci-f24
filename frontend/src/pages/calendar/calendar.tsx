@@ -1,7 +1,7 @@
 import "./calendar.css"
 import NavBar from "../../components/navBar/navBar"
 import { DndContext, Modifier } from "@dnd-kit/core"
-import { useState } from "react"
+import { useRef, useState } from "react"
 import {
   addMinutes,
   calculateEventBoundingBox,
@@ -11,6 +11,8 @@ import { DraggableEvent } from "./DraggableEvent"
 import { range } from "./range"
 import { WorkBlock } from "./calendarTypes"
 import { Event } from "./calendarTypes"
+import { NavigationTabs } from "../../components/NavigationTabs"
+import { Transform } from "@dnd-kit/utilities"
 
 function createSnapModifier(gridSizeX: number, gridSizeY: number): Modifier {
   return ({ transform }) => ({
@@ -18,6 +20,38 @@ function createSnapModifier(gridSizeX: number, gridSizeY: number): Modifier {
     x: Math.ceil((transform.x - gridSizeX / 2) / gridSizeX) * gridSizeX,
     y: Math.ceil((transform.y - gridSizeY / 2) / gridSizeY) * gridSizeY,
   })
+}
+
+type ClientRect = NonNullable<Parameters<Modifier>[0]["activeNodeRect"]>
+
+function restrictToBoundingRect(
+  transform: Transform,
+  rect: ClientRect,
+  boundingRect: ClientRect
+): Transform {
+  const value = {
+    ...transform,
+  }
+
+  if (rect.top + transform.y <= boundingRect.top) {
+    value.y = boundingRect.top - rect.top
+  } else if (
+    rect.bottom + transform.y >=
+    boundingRect.top + boundingRect.height
+  ) {
+    value.y = boundingRect.top + boundingRect.height - rect.bottom
+  }
+
+  if (rect.left + transform.x <= boundingRect.left) {
+    value.x = boundingRect.left - rect.left
+  } else if (
+    rect.right + transform.x >=
+    boundingRect.left + boundingRect.width
+  ) {
+    value.x = boundingRect.left + boundingRect.width - rect.right
+  }
+
+  return value
 }
 
 const initialEvents: Event[] = [
@@ -85,6 +119,29 @@ function getMinuteDifference(dateA: Date, dateB: Date): number {
 
 const minimumBlockSizeMinutes = 30
 const transitionTimeMinutes = 10
+
+const restrictToParentElement: (
+  containerRef: React.RefObject<HTMLDivElement>
+) => Modifier =
+  (containerRef): Modifier =>
+  ({ draggingNodeRect, transform }) => {
+    const rect = containerRef.current?.getBoundingClientRect()
+
+    if (!draggingNodeRect || rect === undefined) {
+      return transform
+    }
+
+    const clientRect = {
+      width: rect.width,
+      height: rect.height,
+      top: rect.top,
+      left: rect.left,
+      right: rect.right,
+      bottom: rect.bottom,
+    }
+
+    return restrictToBoundingRect(transform, draggingNodeRect, clientRect)
+  }
 
 const HomePage: React.FC = () => {
   const startOffsetHours = 9
@@ -167,108 +224,125 @@ const HomePage: React.FC = () => {
 
   const freeSlots = generateSlots()
 
+  const contentFrameRef = useRef<HTMLDivElement>(null)
+
   return (
     <div>
       <NavBar />
       <div className="center-container">
-        <div className="navigation-tabs">
-          <a href="/calendar" className="active">
-            Calendar
-          </a>
-          <a href="/optimizations">Optimizations</a>
-          <a href="/insights">Insights</a>
-        </div>
-        <div className="content-frame">
-          <div className="calendar-dates">
-            {dates.map((sourceDate) => {
-              const month = sourceDate.toLocaleDateString("en-us", {
-                month: "short",
-              })
-              const dayOfTheWeek = sourceDate.toLocaleDateString("en-us", {
-                weekday: "long",
-              })
-              const date = sourceDate.getDate()
+        <NavigationTabs />
+        <div className="calendar-side">
+          <div className="time-labels">
+            {range(startOffsetHours, endOfDayHour + 1).map((hour) => {
+              const dayPeriod = hour < 12 ? "am" : "pm"
+              const convertedHour = hour === 12 ? 12 : hour % 12
+
               return (
-                <div key={sourceDate.getTime()}>
-                  <p>{month}</p>
-                  <p>{date}</p>
-                  <p>{dayOfTheWeek}</p>
-                </div>
+                <p>
+                  {convertedHour}
+                  {dayPeriod}
+                </p>
               )
             })}
           </div>
-          <DndContext
-            modifiers={[createSnapModifier(150, 15)]}
-            autoScroll={false}
-            onDragEnd={(draggedEvent) => {
-              setEvents(
-                events.map((event) => {
-                  if (event.id === draggedEvent.active.id) {
-                    return updateTimeFromCoordDelta(
-                      draggedEvent.delta.x,
-                      draggedEvent.delta.y,
-                      event
-                    )
-                  }
-                  return event
+          <div className="content-frame">
+            <div className="calendar-dates">
+              {dates.map((sourceDate) => {
+                const month = sourceDate.toLocaleDateString("en-us", {
+                  month: "short",
                 })
-              )
-            }}
-          >
-            <div className="calendar-body">
-              {dates.map((date) => {
-                // TODO: make this check more robust
-                const eventsForDay = events.filter(
-                  ({ start }) => start.getDate() === date.getDate()
-                )
-
-                const workBlocksForDay = freeSlots.filter(
-                  ({ start }) => start.getDate() === date.getDate()
-                )
-
+                const dayOfTheWeek = sourceDate.toLocaleDateString("en-us", {
+                  weekday: "long",
+                })
+                const date = sourceDate.getDate()
                 return (
-                  <div key={date.getTime()} className="day-column">
-                    {range(startOffsetHours, endOfDayHour).map((num) => (
-                      <div key={num} className="calendar-background-cell"></div>
-                    ))}
-                    {eventsForDay.map((event) => (
-                      <DraggableEvent
-                        event={event}
-                        key={event.start.getTime()}
-                        startOffsetHours={startOffsetHours}
-                      />
-                    ))}
-                    {workBlocksForDay.map((event) => (
-                      <DroppableWorkZone
-                        workBlock={{
-                          start: event.start,
-                          end: event.end,
-                          id: event.id,
-                        }}
-                        startOffsetHours={startOffsetHours}
-                      />
-                    ))}
+                  <div key={sourceDate.getTime()}>
+                    <p>{month}</p>
+                    <p>{date}</p>
+                    <p>{dayOfTheWeek}</p>
                   </div>
                 )
               })}
             </div>
-            {/* <div className="calendar-body-overlay">
-              {dates.map((date) => {
-                return (
-                  <div key={date.getTime()} className="day-column">
-                    <DroppableWorkZone
-                      workBlock={{
-                        start: new Date("2024-11-13 18:30"),
-                        end: new Date("2024-11-13 20:30"),
-                        id: 5,
-                      }}
-                      startOffsetHours={9}
-                    />
-                  </div>
+            <DndContext
+              modifiers={[
+                restrictToParentElement(contentFrameRef),
+                createSnapModifier(150, 15),
+              ]}
+              autoScroll={false}
+              onDragEnd={(draggedEvent) => {
+                setEvents(
+                  events.map((event) => {
+                    if (event.id === draggedEvent.active.id) {
+                      return updateTimeFromCoordDelta(
+                        draggedEvent.delta.x,
+                        draggedEvent.delta.y,
+                        event
+                      )
+                    }
+                    return event
+                  })
                 )
-              })}
-            </div> */}
-          </DndContext>
+              }}
+            >
+              <div className="calendar-body" ref={contentFrameRef}>
+                {dates.map((date) => {
+                  // TODO: make this check more robust
+                  const eventsForDay = events.filter(
+                    ({ start }) => start.getDate() === date.getDate()
+                  )
+
+                  const workBlocksForDay = freeSlots.filter(
+                    ({ start }) => start.getDate() === date.getDate()
+                  )
+
+                  return (
+                    <div key={date.getTime()} className="day-column">
+                      {range(startOffsetHours, endOfDayHour).map((num) => (
+                        <div
+                          key={num}
+                          className="calendar-background-cell"
+                        ></div>
+                      ))}
+                      {eventsForDay.map((event) => (
+                        <DraggableEvent
+                          event={event}
+                          key={event.start.getTime()}
+                          startOffsetHours={startOffsetHours}
+                        />
+                      ))}
+                      {workBlocksForDay.map((event) => (
+                        <DroppableWorkZone
+                          workBlock={{
+                            start: event.start,
+                            end: event.end,
+                            id: event.id,
+                          }}
+                          startOffsetHours={startOffsetHours}
+                        />
+                      ))}
+                    </div>
+                  )
+                })}
+              </div>
+              {/* <div className="calendar-body-overlay">
+                {dates.map((date) => {
+                  return (
+                    <div key={date.getTime()} className="day-column">
+                      <DroppableWorkZone
+                        workBlock={{
+                          start: new Date("2024-11-13 18:30"),
+                          end: new Date("2024-11-13 20:30"),
+                          id: 5,
+                        }}
+                        startOffsetHours={9}
+                      />
+                    </div>
+                  )
+                })}
+              </div> */}
+            </DndContext>
+          </div>
         </div>
       </div>
     </div>

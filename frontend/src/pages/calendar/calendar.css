@@ -5,7 +5,7 @@ body {
 .navigation-tabs {
   display: flex;
   gap: 10px;
-  margin-left: 10px;
+  margin-left: 45px;
 }
 
 .navigation-tabs a.active {
@@ -115,7 +115,7 @@ body {
 }
 
 .workZone {
-  background: rgb(199, 237, 199);
+  background: #22cc2249;
   border-radius: 8px;
   /* border: 6px dashed green; */
   position: absolute;
@@ -128,6 +128,30 @@ body {
   /* stupid border hack from https://codepen.io/amit_sheen/pen/xxZeyjO */
   background-image: repeating-linear-gradient(0deg, var(--border-color), var(--border-color) 10px, transparent 10px, transparent 19px, var(--border-color) 19px), repeating-linear-gradient(90deg, var(--border-color), var(--border-color) 10px, transparent 10px, transparent 19px, var(--border-color) 19px), repeating-linear-gradient(180deg, var(--border-color), var(--border-color) 10px, transparent 10px, transparent 19px, var(--border-color) 19px), repeating-linear-gradient(270deg, var(--border-color), var(--border-color) 10px, transparent 10px, transparent 19px, var(--border-color) 19px); background-size: 4px 100%, 100% 4px, 4px 100% , 100% 4px; background-position: 0 0, 0 0, 100% 0, 0 100%; background-repeat: no-repeat;
 }
+
+.calendar-side {
+  display: flex;
+}
+
+.time-labels {
+  margin-top: 88px;
+  margin-right: 10px;
+  margin-bottom: -60px;
+}
+
+.time-labels p {
+  height: 60px;
+  margin: 0px;
+  display: flex;
+  margin-top: -10px;
+  margin-bottom: 10px;
+  justify-content: right;
+  text-align: right;
+  width: 50px;
+  font-weight: bold;
+}
+
+
 
 .calendar-body {
   display: flex;
