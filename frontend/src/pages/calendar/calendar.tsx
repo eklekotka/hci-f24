@@ -1,17 +1,16 @@
 import "./calendar.css"
 import NavBar from "../../components/navBar/navBar"
-import { DndContext, Modifier, useDraggable } from "@dnd-kit/core"
+import { DndContext, Modifier } from "@dnd-kit/core"
 import { useState } from "react"
-
-function* rangeGen(start: number, end: number) {
-  for (let num = start; num < end; num += 1) {
-    yield num
-  }
-}
-
-function range(start: number, end: number): number[] {
-  return Array.from(rangeGen(start, end))
-}
+import {
+  addMinutes,
+  calculateEventBoundingBox,
+  getStartOfDayTime,
+} from "./dateUtils"
+import { DraggableEvent } from "./DraggableEvent"
+import { range } from "./range"
+import { WorkBlock } from "./calendarTypes"
+import { Event } from "./calendarTypes"
 
 function createSnapModifier(gridSizeX: number, gridSizeY: number): Modifier {
   return ({ transform }) => ({
@@ -42,44 +41,8 @@ const initialEvents: Event[] = [
   },
 ]
 
-interface Event {
-  name: string
-  start: Date
-  end: Date
-  id: number
-}
-
 function roundToNearestInterval(value: number, interval: number) {
   return Math.round(value / interval) * interval
-}
-
-function dateToTime(date: Date) {
-  return `${date.getHours()}:${String(date.getMinutes()).padStart(2, "0")}`
-}
-
-function calculateEventBoundingBox(
-  { end, start }: WorkBlock,
-  startOffsetHours: number
-) {
-  const length = end.getTime() - start.getTime()
-
-  const startOfDayDate = new Date(start)
-  startOfDayDate.setHours(Math.floor(startOffsetHours))
-  startOfDayDate.setMinutes(
-    (startOffsetHours - Math.floor(startOffsetHours)) * 60
-  )
-  startOfDayDate.setSeconds(0)
-
-  return {
-    height: length / 1000 / 60,
-    top: (start.getTime() - startOfDayDate.getTime()) / 1000 / 60,
-  }
-}
-
-interface WorkBlock {
-  start: Date
-  end: Date
-  id: number
 }
 
 const DroppableWorkZone: React.FC<{
@@ -89,46 +52,6 @@ const DroppableWorkZone: React.FC<{
   const { height, top } = calculateEventBoundingBox(workBlock, startOffsetHours)
 
   return <div className="workZone" style={{ height, top }}></div>
-}
-
-const DraggableEvent: React.FC<{ event: Event; startOffsetHours: number }> = ({
-  event,
-  startOffsetHours,
-}) => {
-  const { id, start, end, name } = event
-
-  const { attributes, listeners, setNodeRef, transform, isDragging } =
-    useDraggable({
-      id,
-    })
-
-  const { height, top } = calculateEventBoundingBox(event, startOffsetHours)
-
-  return (
-    <div
-      ref={setNodeRef}
-      className={"event" + (height <= 100 ? " short" : "")}
-      {...listeners}
-      {...attributes}
-      style={{
-        height,
-        top,
-        transform: `translate(${transform?.x}px, ${transform?.y}px) scale(${
-          isDragging ? 1.05 : 1
-        })`,
-        boxShadow: `0px 0px ${isDragging ? 10 : 0}px 0px purple`,
-        zIndex: isDragging ? 2 : 1,
-      }}
-    >
-      <p className="classTitle">{name}</p>
-      {isDragging && <div className="datePlaceholder"></div>}
-      {!isDragging && (
-        <p className="timeLabel">
-          {dateToTime(start)} - {dateToTime(end)}
-        </p>
-      )}
-    </div>
-  )
 }
 
 const millisPerDay = (1000 * 60 * 60 * 24) / 150
@@ -149,8 +72,6 @@ function updateTimeFromCoordDelta(
   const newEndDate = new Date(newEnd)
   newEndDate.setMinutes(roundToNearestInterval(newEndDate.getMinutes(), 15))
 
-  // const verticalPos = (start.getTime() - startOfDayDate.getTime()) / 1000 / 60
-
   return {
     ...event,
     start: newStartDate,
@@ -158,8 +79,18 @@ function updateTimeFromCoordDelta(
   }
 }
 
+function getMinuteDifference(dateA: Date, dateB: Date): number {
+  return (dateA.getTime() - dateB.getTime()) / 1000 / 60
+}
+
+const minimumBlockSizeMinutes = 30
+const transitionTimeMinutes = 10
+
 const HomePage: React.FC = () => {
-  const [events, setEvents] = useState(initialEvents)
+  const startOffsetHours = 9
+  const endOfDayHour = 21
+  const startWorkingHours = 10
+  const endWorkingHours = 20
 
   const dates = Array(7)
     .fill(0)
@@ -169,6 +100,72 @@ const HomePage: React.FC = () => {
           new Date("2024-11-11 00:00").getTime() + index * 1000 * 60 * 60 * 24
         )
     )
+
+  const [events, setEvents] = useState(initialEvents)
+
+  const generateSlots = (): WorkBlock[] => {
+    const newFreeSlots: WorkBlock[] = []
+    let id = 0
+    dates.forEach((date) => {
+      const eventsOnDate = events.filter(
+        (event) => event.start.getDate() === date.getDate()
+      )
+      eventsOnDate.sort((a, b) => a.start.getTime() - b.start.getTime())
+      const startOfDayDate = getStartOfDayTime(date, startWorkingHours)
+      const endOfDayDate = getStartOfDayTime(date, endWorkingHours)
+
+      eventsOnDate.forEach((event, index) => {
+        if (index === 0) {
+          if (
+            getMinuteDifference(event.start, startOfDayDate) >
+            minimumBlockSizeMinutes + transitionTimeMinutes
+          ) {
+            newFreeSlots.push({
+              id: id++,
+              start: startOfDayDate,
+              end: addMinutes(event.start, -transitionTimeMinutes),
+            })
+          }
+        } else {
+          const prevEvent = eventsOnDate[index - 1]
+
+          if (
+            getMinuteDifference(event.start, prevEvent.end) >
+            minimumBlockSizeMinutes + transitionTimeMinutes * 2
+          ) {
+            newFreeSlots.push({
+              id: id++,
+              start: addMinutes(prevEvent.end, transitionTimeMinutes),
+              end: addMinutes(event.start, -transitionTimeMinutes),
+            })
+          }
+        }
+      })
+
+      if (eventsOnDate.length >= 1) {
+        const lastEvent = eventsOnDate[eventsOnDate.length - 1]
+        if (
+          getMinuteDifference(endOfDayDate, lastEvent.end) >
+          transitionTimeMinutes + minimumBlockSizeMinutes
+        ) {
+          newFreeSlots.push({
+            id: id++,
+            start: addMinutes(lastEvent.end, transitionTimeMinutes),
+            end: endOfDayDate,
+          })
+        }
+      } else if (eventsOnDate.length === 0) {
+        newFreeSlots.push({
+          id: id++,
+          start: startOfDayDate,
+          end: endOfDayDate,
+        })
+      }
+    })
+    return newFreeSlots
+  }
+
+  const freeSlots = generateSlots()
 
   return (
     <div>
@@ -225,18 +222,40 @@ const HomePage: React.FC = () => {
                   ({ start }) => start.getDate() === date.getDate()
                 )
 
+                const workBlocksForDay = freeSlots.filter(
+                  ({ start }) => start.getDate() === date.getDate()
+                )
+
                 return (
                   <div key={date.getTime()} className="day-column">
-                    {range(9, 21).map((num) => (
+                    {range(startOffsetHours, endOfDayHour).map((num) => (
                       <div key={num} className="calendar-background-cell"></div>
                     ))}
                     {eventsForDay.map((event) => (
                       <DraggableEvent
                         event={event}
                         key={event.start.getTime()}
-                        startOffsetHours={9}
+                        startOffsetHours={startOffsetHours}
                       />
                     ))}
+                    {workBlocksForDay.map((event) => (
+                      <DroppableWorkZone
+                        workBlock={{
+                          start: event.start,
+                          end: event.end,
+                          id: event.id,
+                        }}
+                        startOffsetHours={startOffsetHours}
+                      />
+                    ))}
+                  </div>
+                )
+              })}
+            </div>
+            {/* <div className="calendar-body-overlay">
+              {dates.map((date) => {
+                return (
+                  <div key={date.getTime()} className="day-column">
                     <DroppableWorkZone
                       workBlock={{
                         start: new Date("2024-11-13 18:30"),
@@ -248,7 +267,7 @@ const HomePage: React.FC = () => {
                   </div>
                 )
               })}
-            </div>
+            </div> */}
           </DndContext>
         </div>
       </div>
