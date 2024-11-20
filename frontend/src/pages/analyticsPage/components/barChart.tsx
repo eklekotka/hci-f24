@@ -1,5 +1,6 @@
 import { BarChart } from '@mui/x-charts/BarChart';
 import "./components.css"
+import { colors } from '@mui/material';
 
 export default function TimeSpentPerDay() {
   return (

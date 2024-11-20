@@ -26,12 +26,12 @@
 }
 
 .center-container {
-  /* display: grid; */
+   display: grid; 
   margin: 0 auto;
-  /* place-items: center; */
-  /* display: flex; */
-  /* flex-direction: column; */
-  /* align-items: center; */
+  place-items: center; 
+   display: flex; 
+   flex-direction: column; 
+   align-items: center;
 }
 
 .calendar-dates {
@@ -53,4 +53,40 @@
 .calendar-dates p:nth-child(2) {
   font-weight: bold;
   font-size: 25px;
+}
+
+.optimization-divider {
+  font-size: 25px;
+  text-align: center;
+  background-color: #bfe7ef;
+  align-items: center;
+  width: 80%;
+  border-radius: 1%;
+  padding: 15px;
+  justify-content: space-around;
+  gap: 20px;
+}
+
+.aligned {
+  display: flex;
+  justify-content: space-around; 
+  gap: 20px; 
+}
+
+.positive {
+  border: 5px solid #00B4D8;
+  border-radius: 25%;
+  background-color: #00B4D8;
+  color: aliceblue;
+  padding: 10px 25px;
+  font-size: 20px;
+}
+
+.negative {
+  border: 5px solid rgb(230, 108, 108);
+  border-radius: 15%;
+  background-color: rgb(230, 108, 108);
+  color: aliceblue;
+  padding: 15px 25px;
+  font-size: 20px;
 }

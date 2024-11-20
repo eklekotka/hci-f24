@@ -9,10 +9,10 @@ export default function ClassTimeProportions() {
       series={[
         {
           data: [
-            { id: 0, value: 12, color: "blue",label: 'Human-Computer Interaction' },
-            { id: 2, value: 20, color: "teal", label: 'Business Analytics' },
-            { id: 1, value: 15, color: "light blue", label: 'Introduction to Business at Northeastern' },
-            { id: 3, value: 20, color: "navy", label: 'Introduction to Data Science' },
+            { id: 0, value: 12, color: "#03045E",label: 'Human-Computer Interaction' },
+            { id: 2, value: 20, color: "#0077B6", label: 'Business Analytics' },
+            { id: 1, value: 15, color: "#00B4D8", label: 'Introduction to Business at Northeastern' },
+            { id: 3, value: 20, color: "#ADE8F4", label: 'Introduction to Data Science' },
           ]},
       ]}
       slotProps={{
