@@ -17,7 +17,7 @@ export const AnalyticsPage: React.FC = () => {
           </div>
           <div className = "charts-container">
             <h2>Hours Studied This Week, By Class</h2>
-            <h2>Average Hours Studied, By Day of the Week</h2>
+            <h2>Average Hours Studied, By Day of the week</h2>
           </div>
           <div className="charts-container">
           <ClassTimeProportions/>

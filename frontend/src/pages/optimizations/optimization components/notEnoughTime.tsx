@@ -6,7 +6,7 @@ export const LessTimeComponent: React.FC = () => {
         <div className="aligned">
         <button className="positive">Skip an Event</button>
         <button className="positive">Extend Working Hours</button>
-        <button className="negative">No</button>
+        <button className="negative">Nothing</button>
         </div>
     </div>
     )
